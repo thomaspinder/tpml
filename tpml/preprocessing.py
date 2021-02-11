@@ -3,8 +3,18 @@ from pandas.core.frame import DataFrame
 from sklearn.model_selection import train_test_split
 from multipledispatch import dispatch
 from numpy import ndarray
-from tpml.types import Results
+from .types import Results
 from typing import Tuple
+
+
+def unstandardise(X, mu, sigma) -> ndarray:
+    """
+    Reproject data back onto its original scale.
+    Example
+    -------
+    >>> X = unstandardise(Xtransform, Xmean, Xstd)
+    """
+    return (X*sigma)+mu
 
 
 @dispatch(ndarray)
@@ -49,3 +59,5 @@ def get_xy(df: DataFrame, target_name: str, standardise_data: bool = False, trai
         if Xte is not None:
             Xte = standardise(Xte, Xmean, Xstd)
     return Results((Xtr, Xte, ytr, yte), (Xmean, Xstd))
+
+
