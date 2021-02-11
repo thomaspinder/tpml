@@ -45,7 +45,7 @@ def unstandardise(X, mu, sigma) -> ndarray:
     return (X*sigma)+mu
 
 
-def get_xy(df: DataFrame, target_name: str, standardise: bool = False, train_size: float = 1.0, seed: int = 123) -> Results:
+def get_xy(df: DataFrame, target_name: str, standardise_data: bool = False, train_size: float = 1.0, seed: int = 123) -> Results:
     X = df.drop(target_name, axis=1).values
     y = df[target_name].values.reshape(-1, 1)
     if train_size < 1.:
@@ -53,7 +53,7 @@ def get_xy(df: DataFrame, target_name: str, standardise: bool = False, train_siz
     else:
         Xtr, ytr = X, y
         Xte, yte = None, None
-    if standardise:
+    if standardise_data:
         Xtr, Xmean, Xstd = standardise(X)
         if Xte:
             Xte = standardise(Xte, Xmean, Xstd)
