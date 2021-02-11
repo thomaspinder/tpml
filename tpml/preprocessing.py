@@ -1,9 +1,9 @@
-import numpy as np 
+import numpy as np
 from pandas.core.frame import DataFrame
 from sklearn.model_selection import train_test_split
 from multipledispatch import dispatch
 from numpy import ndarray
-from .types import Results
+from tpml.types import Results
 from typing import Tuple
 
 
@@ -15,11 +15,11 @@ def standardise(X: ndarray) -> Tuple[ndarray, ndarray, ndarray]:
     -------
     >>> X = np.random.randn(10, 2)
     >>> Xtransform, Xmean, Xstd = standardise(X)
-    
+
     """
     mu = np.mean(X, axis=0)
     sigma = np.std(X, axis=0)
-    return (X-mu)/sigma, mu, sigma
+    return (X - mu) / sigma, mu, sigma
 
 
 @dispatch(ndarray, ndarray, ndarray)
@@ -35,17 +35,8 @@ def standardise(X: ndarray, mean: ndarray, std: ndarray) -> Tuple[ndarray, ndarr
     return (X - mean) / std, mean, std
 
 
-def unstandardise(X, mu, sigma) -> ndarray:
-    """
-    Reproject data back onto its original scale.
-    Example
-    -------
-    >>> X = unstandardise(Xtransform, Xmean, Xstd)
-    """
-    return (X*sigma)+mu
-
-
-def get_xy(df: DataFrame, target_name: str, standardise_data: bool = False, train_size: float = 1.0, seed: int = 123) -> Results:
+def get_xy(df: DataFrame, target_name: str, standardise_data: bool = False, train_size: float = 1.0,
+           seed: int = 123) -> Results:
     X = df.drop(target_name, axis=1).values
     y = df[target_name].values.reshape(-1, 1)
     if train_size < 1.:
@@ -54,9 +45,7 @@ def get_xy(df: DataFrame, target_name: str, standardise_data: bool = False, trai
         Xtr, ytr = X, y
         Xte, yte = None, None
     if standardise_data:
-        Xtr, Xmean, Xstd = standardise(X)
-        if Xte:
+        Xtr, Xmean, Xstd = standardise(Xtr)
+        if Xte is not None:
             Xte = standardise(Xte, Xmean, Xstd)
     return Results((Xtr, Xte, ytr, yte), (Xmean, Xstd))
-
-
