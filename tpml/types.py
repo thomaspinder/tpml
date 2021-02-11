@@ -1,2 +1,2 @@
-from numpy import np
+import numpy as np
 NPArray = np.ndarray
