@@ -33,7 +33,7 @@ def standardise(X: ndarray) -> Tuple[ndarray, ndarray, ndarray]:
 
 
 @dispatch(ndarray, ndarray, ndarray)
-def standardise(X: ndarray, mean: ndarray, std: ndarray) -> Tuple[ndarray, ndarray, ndarray]:
+def standardise(X: ndarray, mean: ndarray, std: ndarray) -> ndarray:
     """
     Standardise a dataset column-wise to unary Gaussian.
     Example
@@ -42,7 +42,7 @@ def standardise(X: ndarray, mean: ndarray, std: ndarray) -> Tuple[ndarray, ndarr
     >>> Xtransform, Xmean, Xstd = standardise(X)
 
     """
-    return (X - mean) / std, mean, std
+    return (X - mean) / std
 
 
 def get_xy(df: DataFrame, target_name: str, standardise_data: bool = False, train_size: float = 1.0,
@@ -50,7 +50,7 @@ def get_xy(df: DataFrame, target_name: str, standardise_data: bool = False, trai
     X = df.drop(target_name, axis=1).values
     y = df[target_name].values.reshape(-1, 1)
     if train_size < 1.:
-        Xtr, Xte, ytr, yte = train_test_split(X, y, random_state=seed, train_size=train_size)
+        Xtr, Xte, ytr, yte = train_test_split(X, y, random_state=seed, train_size=train_size, shuffle=False)
     else:
         Xtr, ytr = X, y
         Xte, yte = None, None
